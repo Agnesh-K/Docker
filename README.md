@@ -209,7 +209,7 @@
 
   - Run the Docker container:
       ```
-      docker run -d --name -apache2_ubuntu -p 80:80 my-apache2
+      docker run -d --name apache2_ubuntu -p 80:80 my-apache2
       ```
 
   - Access the webpage:
