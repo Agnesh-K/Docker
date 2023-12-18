@@ -133,5 +133,93 @@
       ```
       docker image prune
       ```
+  19. Inspect docker container:
+      ```
+      docker inspect <container_id>
+      ```
+
+## Running apache2 inside docker:
+
+  ### 1. Easiest method to import file from docker hub library using below command:
+     ```
+     sudo docker run -d --name <name> -e TZ=UTC -p 8080:80 -v /localpath/to/website:/var/www/html ubuntu/apache2
+     ```
+       - -d                       :runs the apache2 in background
+       - name                     :give desired name to your container
+       - -p                       :map localhost port to default apache2 port inside container
+       - /localpath/to/website    :local index.html file to run on server
+       - ubuntu/apache2           :image name on docker hub repository
+
+  ### 2. Running apache2 inside docker with base Ubuntu OS:
+  - Create new Dockerfile
+       
+       ```
+       touch Dockerfile
+       ```
+       
+  - Create new file index.html and paste your desired webpage html code
+       
+       ```
+       touch index.html
+       nano index.html
+       ```
+       
+       ```
+       <!-- index.html -->
+       <!DOCTYPE html>
+       <html>
+       <head>
+         <title>My Custom Webpage</title>
+       </head>
+       <body>
+         <h1>Hello from My Personalised Webapage!</h1>
+       </body>
+       </html>
+       ```
+       
+  - Edit Dockerfile to give commands:
+       
+       ```
+       nano Dockerfile
+       ```
+       
+       ```
+       # Use Ubuntu as the base image
+       FROM ubuntu
+
+       # Install Apache2 and other dependencies
+       RUN apt-get update && \
+       apt-get install -y apache2 && \
+       apt-get clean && \
+       rm -rf /var/lib/apt/lists/*
+
+       # Copy custom HTML file to Apache document root
+       COPY index.html /var/www/html/
+       # Expose port 80 for Apache
+       EXPOSE 80
+
+       # Start Apache in the foreground
+       CMD ["apache2ctl", "-D", "FOREGROUND"]
+       ```
+
+  - Build the Docker image:
+      ```
+      docker build -t my-apache2 -f Dockerfile .
+      ```
+
+  - Run the Docker container:
+      ```
+      docker run -d --name -apache2_ubuntu -p 80:80 my-apache2
+      ```
+
+  - Access the webpage:
+      Open a web browser and navigate to http://localhost:80. You should see your custom webpage served by Apache.
+      
+
+      
+     
+     
+     
+
 
      
