@@ -8,7 +8,8 @@ apt-get clean && \
 rm -rf /var/lib/apt/lists/*
 
 # Copy custom HTML file to Apache document root
-#COPY index.html /var/www/html/
+COPY index.html /var/www/html/
+
 # Expose port 80 for Apache
 EXPOSE 80
 
