@@ -215,7 +215,161 @@
   - Access the webpage:
       Open a web browser and navigate to http://localhost:80. You should see your custom webpage served by Apache.
       
+  ### 3. Testing Example Voting App using docker:
+  - Prerequisites:
+      Install docker and git on ubuntu OS.
 
+  - Architecture:
+    - A front-end web app in Python which lets you vote between two options
+    - A Redis which collects new votes
+    - A .NET worker which consumes votes and stores them in…
+    - A Postgres database backed by a Docker volume
+    - A Node.js web app which shows the results of the voting in real time
+   
+      ![image](https://github.com/Agneshkastury/Docker/assets/154126091/2d37bc00-7354-42ad-8ee7-6c405c2a82b1)
+
+
+  - Run below commands in sequence:
+    ```
+    git clone https://github.com/dockersamples/example-voting-app.git
+    cd example-voting-app/vote
+    docker build . -t vote
+    cd .. && cd worker/
+    docker build . -t worker
+    cd .. && cd result/
+    docker build . -t result
+    docker pull redis
+    docker pull postgres:9.5
+
+    docker run -d --name=redis redis
+    docker run -d --name=db -e POSTGRES_PASSWORD=password -e POSTGRES_HOST_AUTH_METHOD=trust postgres:9.5
+    docker run -d --name=vote -p 5000:80 --link redis:redis vote
+    docker run -d --name=result -p 5001:80 --link db:db result
+    docker run -d --name=worker --link db:db --link redis:redis worker
+    ```
+
+  - Open a web browser and navigate to http://localhost:5000. You should see voting page and cast your vote.
+
+    ![Screenshot (50)](https://github.com/Agneshkastury/Docker/assets/154126091/aa07210e-1651-4463-a681-156ac3e00c43)
+
+  - Then open navigate to http://localhost:5001 to see the vote cast.
+
+    ![Screenshot (51)](https://github.com/Agneshkastury/Docker/assets/154126091/4a5dcf58-42e1-44f4-a509-2c9e0b1f68b4)
+
+  ### 3. Testing Example Voting App using docker:
+  - Prerequisites:
+      Install docker-compose using following commands:
+      ```
+      apt-get update
+      apt-get install docker-compose -y
+      ```
+
+  - Create and load docker-compose file:
+
+    Create a file named docker-compose.yml in your project directory. This file defines the services, networks, and volumes for your application.
+    
+      ```
+      touch docker-compose.yml
+      nano docker-compose.yml
+      ```
+      
+  - Add docker-compose code as under:
+    
+      ```
+      redis:
+        image: redis
+      db:
+        image: postgres:9.5
+        restart: always
+        environment: 
+          POSTGRES_PASSWORD: mypass
+          POSTGRES_HOST_AUTH_METHOD: trust
+      vote:
+        image: vote
+        ports:
+          - 5000:80
+        links:
+          - redis
+      result:
+        image: result
+      ports:
+        - 5001:80
+      links:
+        - db
+      worker:
+        image: worker
+      links:
+        - redis
+        - db
+      ```
+
+  - Run Docker-compose:
+
+    - Use the following command to start the services defined in your docker-compose.yml file:
+    
+      ```
+      docker-compose up
+      ```
+    - Open a web browser and navigate to http://localhost:5000. You should see voting page and cast your vote.
+
+      ![Screenshot (50)](https://github.com/Agneshkastury/Docker/assets/154126091/aa07210e-1651-4463-a681-156ac3e00c43)
+
+    - Then open navigate to http://localhost:5001 to see the vote cast.
+
+      ![Screenshot (51)](https://github.com/Agneshkastury/Docker/assets/154126091/4a5dcf58-42e1-44f4-a509-2c9e0b1f68b4)
+    
+  - Verify Running Containers by following command:
+    
+      ```
+      docker-compose ps
+      ```
+    
+  - Stop and Remove Containers:
+
+    When you are done, you can stop and remove the containers using the following command:
+    
+      ```
+      docker-compose down
+      ```
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
       
      
      
