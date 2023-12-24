@@ -141,6 +141,7 @@
 ## Running apache2 inside docker:
 
   ### 1. Easiest method to import file from docker hub library using below command:
+  
      ```
      sudo docker run -d --name <name> -e TZ=UTC -p 8080:80 -v /localpath/to/website:/var/www/html ubuntu/apache2
      ```
@@ -151,6 +152,7 @@
        - ubuntu/apache2           :image name on docker hub repository
 
   ### 2. Running apache2 inside docker with base Ubuntu OS:
+
   - Create new Dockerfile
        
        ```
@@ -203,11 +205,13 @@
        ```
 
   - Build the Docker image:
+    
       ```
       docker build -t my-apache2 -f Dockerfile .
       ```
 
   - Run the Docker container:
+    
       ```
       docker run -d --name apache2_ubuntu -p 80:80 my-apache2
       ```
@@ -216,6 +220,7 @@
       Open a web browser and navigate to http://localhost:80. You should see your custom webpage served by Apache.
       
   ### 3. Testing Example Voting App using docker:
+
   - Prerequisites:
       Install docker and git on ubuntu OS.
 
@@ -230,6 +235,7 @@
 
 
   - Run below commands in sequence:
+    
     ```
     git clone https://github.com/dockersamples/example-voting-app.git
     cd example-voting-app/vote
@@ -256,7 +262,7 @@
 
     ![Screenshot (51)](https://github.com/Agneshkastury/Docker/assets/154126091/4a5dcf58-42e1-44f4-a509-2c9e0b1f68b4)
 
-  ### 3. Testing Example Voting App using docker:
+  ### 3. Testing Example Voting App using docker-compose (version 1):
   - Prerequisites:
       Install docker-compose using following commands:
       ```
@@ -331,7 +337,36 @@
       ```
       docker-compose down
       ```
-    
+
+   ### 3. Testing Example Voting App using docker-compose (version 3):
+
+   - All process and commands remain same as version 1 only change is in docker-compose.yml code as under:
+     
+     - No need to specify links as it is done automatically in version 3 onwards.
+     - Also, if the minor version 3.x is not specified it takes 3.0 by default not latest one.
+     
+     ```
+     version: "3.8"
+       services:
+         redis:
+          image: redis
+         db:
+          image: postgres:9.5
+          restart: always
+          environment:
+            POSTGRES_USER: postgres 
+            POSTGRES_PASSWORD: postgres
+         vote:
+          image: vote
+          ports:
+            - 5000:80
+         result:
+          image: result
+          ports:
+            - 5001:80
+         worker:
+            image: worker
+     ```
   
 
 
